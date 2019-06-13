@@ -29,6 +29,7 @@ public class CameraControl : MonoBehaviour
     private void setCameraRot(){
         yaw += lookSensitivity * Input.GetAxis("Mouse X");
         pitch -= lookSensitivity * Input.GetAxis("Mouse Y");
+        Debug.Log("Pitch: " + pitch + "Yaw: " + yaw);
 
         transform.eulerAngles = new Vector3(pitch, yaw, 0.0f);
     }
