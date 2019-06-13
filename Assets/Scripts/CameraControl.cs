@@ -18,6 +18,7 @@ public class CameraControl : MonoBehaviour
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;//locks cursor to center of screen, we can add a crosshair later if we want
         lookSensitivity = 10f;
+        verifyUnparented();
     }
 
     void Update(){
@@ -29,7 +30,7 @@ public class CameraControl : MonoBehaviour
     private void setCameraRot(){
         yaw += lookSensitivity * Input.GetAxis("Mouse X");
         pitch -= lookSensitivity * Input.GetAxis("Mouse Y");
-        Debug.Log("Pitch: " + pitch + "Yaw: " + yaw);
+        //Debug.Log("Pitch: " + pitch + "Yaw: " + yaw);
 
         transform.eulerAngles = new Vector3(pitch, yaw, 0.0f);
     }
@@ -37,6 +38,15 @@ public class CameraControl : MonoBehaviour
     private void setCameraPos(){
         if(!this.transform.position.Equals(player.transform.position)){//just a slight code optimization. No need to set position if the position hasn't changed
             this.transform.position = player.transform.position;
+        }
+    }
+
+    private void verifyUnparented(){
+        //6/13/19 Currently the main camera does not need to be childed to anything, specifically the player. The position is being set in this script. This method will unparent the camera
+        //if it has a parent
+        if(this.transform.parent){
+            Debug.Log("Removing");
+            this.transform.parent = null;
         }
     }
 }
