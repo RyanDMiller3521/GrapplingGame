@@ -7,6 +7,8 @@ public class PlayerController : MonoBehaviour
     private Rigidbody myRigidBody;
     private Vector3 inputs = Vector3.zero;
     private bool isGrounded = true;
+    private Transform Cam;                  // A reference to the main camera in the scenes transform
+    private Vector3 CamForward;
     //private Transform groundChecker;
     public float walkSpeed;
     public float runSpeed;
@@ -17,6 +19,7 @@ public class PlayerController : MonoBehaviour
     {
         myRigidBody = GetComponent<Rigidbody>();
         //groundChecker = transform.GetChild(0);
+        Cam = Camera.main.transform;
     }
 
     // Update is called once per frame
@@ -37,6 +40,8 @@ public class PlayerController : MonoBehaviour
         inputs.x = Input.GetAxis("Horizontal");
         inputs.z = Input.GetAxis("Vertical");
         //if (inputs != Vector3.zero)
-            //transform.forward = inputs;
+        //transform.forward = inputs;
+        CamForward = Vector3.Scale(Cam.forward, new Vector3(1, 0, 1)).normalized;
+        inputs = inputs.z * CamForward + inputs.x * Cam.right;
     }
 }
