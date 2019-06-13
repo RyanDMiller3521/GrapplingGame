@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using UnityEditor.Timeline;
+using UnityEngine;
 
 public class CameraControl : MonoBehaviour
 {
@@ -28,11 +29,30 @@ public class CameraControl : MonoBehaviour
     }
 
     private void setCameraRot(){
-        yaw += lookSensitivity * Input.GetAxis("Mouse X");
-        pitch -= lookSensitivity * Input.GetAxis("Mouse Y");
-        //Debug.Log("Pitch: " + pitch + "Yaw: " + yaw);
+        float mouseX = Input.GetAxis("Mouse X");
+        float mouseY = Input.GetAxis("Mouse Y");
 
+        yaw += lookSensitivity * mouseX;
+        if(yaw > 360) yaw = 0; else if(yaw < 0) yaw = 360;//this keeps the value between 0 and 360. This will make limiting rotation a bit easier
+        pitch -= lookSensitivity * mouseY;
+        if(pitch > 360) pitch = 0; else if(pitch < 0) pitch = 360;//same thing as the yaw restrictions
+        //Debug.Log("Pitch: " + pitch + "Yaw: " + yaw);
+        pitch = fixPitchVal(pitch, mouseX);
         transform.eulerAngles = new Vector3(pitch, yaw, 0.0f);
+    }
+
+    private float fixPitchVal(float pitch, float mouseX){
+        //this will fix the pitch value so that we can limit our rotation.
+        if((pitch >= 0 && pitch <= 60) || (pitch >= 230 && pitch <= 360)){
+            return pitch;
+        }else if(pitch > 60 && pitch < 230){
+            if(Input.GetAxis("Mouse X") < 0){
+                pitch = 60;
+            }else if(mouseX > 0){
+                pitch = 230;
+            }
+        }
+        return pitch;
     }
 
     private void setCameraPos(){
