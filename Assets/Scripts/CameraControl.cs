@@ -1,4 +1,4 @@
-﻿using UnityEditor.Timeline;
+﻿//used half of the code I had, and some from here: https://forum.unity.com/threads/solved-how-to-clamp-camera-rotation-on-the-x-axis-fps-controller.526871/
 using UnityEngine;
 
 public class CameraControl : MonoBehaviour
@@ -10,9 +10,6 @@ public class CameraControl : MonoBehaviour
     private float lookSensitivity;
 
     //Standard fields
-    //todo: 6/12/19 somehow limit pitch and yaw so the player cannot rotate endlessly
-    private float pitch = 0.0f;
-    private float yaw = 0.0f;
 
     void Start(){
         setCameraPos();
@@ -28,31 +25,15 @@ public class CameraControl : MonoBehaviour
         //Debug.Log(transform.eulerAngles);
     }
 
+    float rotX = 0f;
+    float rotY = 0f;
+    float RotSpeed = 10f;
+
     private void setCameraRot(){
-        float mouseX = Input.GetAxis("Mouse X");
-        float mouseY = Input.GetAxis("Mouse Y");
-
-        yaw += lookSensitivity * mouseX;
-        if(yaw > 360) yaw = 0; else if(yaw < 0) yaw = 360;//this keeps the value between 0 and 360. This will make limiting rotation a bit easier
-        pitch -= lookSensitivity * mouseY;
-        if(pitch > 360) pitch = 0; else if(pitch < 0) pitch = 360;//same thing as the yaw restrictions
-        //Debug.Log("Pitch: " + pitch + "Yaw: " + yaw);
-        pitch = fixPitchVal(pitch, mouseX);
-        transform.eulerAngles = new Vector3(pitch, yaw, 0.0f);
-    }
-
-    private float fixPitchVal(float pitch, float mouseX){
-        //this will fix the pitch value so that we can limit our rotation.
-        if((pitch >= 0 && pitch <= 60) || (pitch >= 230 && pitch <= 360)){
-            return pitch;
-        }else if(pitch > 60 && pitch < 230){
-            if(Input.GetAxis("Mouse X") < 0){
-                pitch = 60;
-            }else if(mouseX > 0){
-                pitch = 230;
-            }
-        }
-        return pitch;
+        rotX += Input.GetAxis("Mouse X")*lookSensitivity;
+        rotY += Input.GetAxis("Mouse Y") * lookSensitivity;
+        rotY = Mathf.Clamp(rotY, -60f, 90f);
+        transform.eulerAngles = new Vector3(-rotY, rotX, 0.0f);
     }
 
     private void setCameraPos(){
