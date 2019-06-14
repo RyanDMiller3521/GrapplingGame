@@ -31,7 +31,14 @@ public class PlayerController : MonoBehaviour
 
     void FixedUpdate()
     {
-        myRigidBody.MovePosition(myRigidBody.position + inputs * walkSpeed * Time.fixedDeltaTime);
+        if (Input.GetButton("Sprint"))
+        {
+
+        }
+        else
+        {
+            myRigidBody.MovePosition(myRigidBody.position + inputs * walkSpeed * Time.fixedDeltaTime);
+        }
     }
 
     void movement()

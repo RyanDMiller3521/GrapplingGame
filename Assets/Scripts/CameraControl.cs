@@ -6,7 +6,7 @@ public class CameraControl : MonoBehaviour
     //Serialized fields
     [SerializeField]
     private Player player;
-    [SerializeField][Range(10f, 50f)]
+    [SerializeField][Range(1f, 50f)]
     private float lookSensitivity;
 
     //Standard fields
