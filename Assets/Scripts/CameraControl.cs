@@ -38,7 +38,9 @@ public class CameraControl : MonoBehaviour
 
     private void setCameraPos(){
         if(!this.transform.position.Equals(player.transform.position)){//just a slight code optimization. No need to set position if the position hasn't changed
-            this.transform.position = player.transform.position;
+            Vector3 newPos = player.transform.position;
+            newPos.y++;
+            this.transform.position = newPos;
         }
     }
 
