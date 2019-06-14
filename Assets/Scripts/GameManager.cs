@@ -21,10 +21,12 @@ public class GameManager : MonoBehaviour
     }
 
     public bool CanMove {get; set;}
+    public bool CapVelocity { get; set; }//used for capping and uncapping your movement speed
     // Start is called before the first frame update
     void Start()
     {
         CanMove = true;
+        CapVelocity = true;
     }
 
     // Update is called once per frame
