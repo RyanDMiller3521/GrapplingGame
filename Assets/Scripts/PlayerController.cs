@@ -6,10 +6,8 @@ public class PlayerController : MonoBehaviour
 {
     private Rigidbody myRigidBody;
     private Vector3 inputs = Vector3.zero;
-    private bool isGrounded = true;
     private Transform Cam;                  // A reference to the main camera in the scenes transform
     private Vector3 CamForward;
-    //private Transform groundChecker;
     [SerializeField]
     private float walkSpeed;
     [SerializeField]
@@ -18,12 +16,16 @@ public class PlayerController : MonoBehaviour
     private float jumpHeight;
     [SerializeField]
     private float maxSpeed;
+    private bool isGrounded = true;
+    private float disToGround;
+    private CapsuleCollider myCollider;
 
     // Start is called before the first frame update
     void Start()
     {
+        myCollider = GetComponent<CapsuleCollider>();
+        disToGround = myCollider.height / 2;
         myRigidBody = GetComponent<Rigidbody>();
-        //groundChecker = transform.GetChild(0);
         Cam = Camera.main.transform;
     }
 
@@ -36,10 +38,12 @@ public class PlayerController : MonoBehaviour
 
     void FixedUpdate()
     {
+        isGrounded = groundedChecker();
         Debug.Log(myRigidBody.velocity);
-        if (Input.GetButton("Sprint"))
+        if (Input.GetButton("Sprint") && isGrounded)
         {
-            myRigidBody.AddRelativeForce(inputs * runSpeed, ForceMode.Acceleration);
+            myRigidBody.AddRelativeForce(inputs * runSpeed, ForceMode.Force);
+            Debug.Log(inputs * runSpeed);
             if (GameManager.Instance.CapVelocity)
             {
                 CapVelocity();
@@ -60,9 +64,8 @@ public class PlayerController : MonoBehaviour
         CamForward = Vector3.Scale(Cam.forward, new Vector3(1, 0, 1)).normalized;
         inputs = inputs.z * CamForward + inputs.x * Cam.right;
         // adds a vertical force so the character will jump
-        if(Input.GetButtonDown("Jump"))
+        if(Input.GetButtonDown("Jump") && isGrounded)
         {
-            Debug.Log("JUmped");
             myRigidBody.AddForce(Vector3.up * Mathf.Sqrt(jumpHeight * -2f * Physics.gravity.y), ForceMode.VelocityChange);
         }
     }
@@ -70,5 +73,11 @@ public class PlayerController : MonoBehaviour
     void CapVelocity()//caps the velocity of the player when just running on the ground
     {
         myRigidBody.velocity = Vector3.ClampMagnitude(myRigidBody.velocity, maxSpeed);
+    }
+
+    bool groundedChecker()
+    {
+        //checks to see if the player is touching the ground or anything below his feet
+        return Physics.Raycast(transform.position, Vector3.down, disToGround);
     }
 }
