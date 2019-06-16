@@ -18,7 +18,6 @@ public class PlayerController : MonoBehaviour
     private float disToGround;
     private CapsuleCollider myCollider;
 
-    // Start is called before the first frame update
     void Start()
     {
         myCollider = GetComponent<CapsuleCollider>();
@@ -46,8 +45,9 @@ public class PlayerController : MonoBehaviour
         //Debug.Log(myRigidBody.velocity);
         if (Input.GetButton("Sprint") && isGrounded)
         {
-            myRigidBody.AddRelativeForce(inputs * runSpeed, ForceMode.Force);
-            Debug.Log(inputs * runSpeed);
+            //todo: fix the difference between using force and not using force when sprinting and walking
+            myRigidBody.AddRelativeForce(inputs * runSpeed, ForceMode.Force);//sprint using force
+            //Debug.Log(inputs * runSpeed);
             if (GameManager.Instance.CapVelocity)
             {
                 CapVelocity();
@@ -55,7 +55,10 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
-            myRigidBody.MovePosition(myRigidBody.position + inputs * walkSpeed * Time.fixedDeltaTime); // walking speed just moves the position of the character currently does not use velocity at all
+            //walk without using force
+            //myRigidBody.MovePosition(myRigidBody.position + inputs * walkSpeed * Time.fixedDeltaTime); // walking speed just moves the position of the character currently does not use velocity at all
+            //attempting to fix problem. Uncomment the above line and comment out the below line to return to previous broken
+            myRigidBody.AddRelativeForce(inputs * walkSpeed, ForceMode.Force);
         }
     }
 
@@ -77,6 +80,11 @@ public class PlayerController : MonoBehaviour
     {
         //checks to see if the player is touching the ground or anything below his feet
         return Physics.Raycast(transform.position, Vector3.down, disToGround);
+    }
+
+    void OnCollisionExit(Collision collision){
+        Debug.Log("Collided");
+
     }
 }
 
