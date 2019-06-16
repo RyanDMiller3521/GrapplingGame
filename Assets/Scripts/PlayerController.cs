@@ -61,6 +61,8 @@ public class PlayerController : MonoBehaviour
            //myRigidBody.AddRelativeForce(inputs * walkSpeed, ForceMode.Acceleration);
 
         }
+        if(GameManager.Instance.CapVelocity)
+            CapVelocity();
     }
 
     void getUserInputs(){
