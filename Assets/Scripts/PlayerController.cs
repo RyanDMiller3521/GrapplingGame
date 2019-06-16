@@ -17,6 +17,7 @@ public class PlayerController : MonoBehaviour
     private bool isGrounded = true;
     private float disToGround;
     private CapsuleCollider myCollider;
+    private bool forceMovement = true;
 
     void Start()
     {
@@ -24,6 +25,14 @@ public class PlayerController : MonoBehaviour
         disToGround = myCollider.height / 2;
         myRigidBody = GetComponent<Rigidbody>();
         Cam = Camera.main.transform;
+    }
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Backspace))
+        {
+            forceMovement = !forceMovement;
+            Debug.Log("forceMovement is " + forceMovement);
+        }
     }
 
     void FixedUpdate()
@@ -41,24 +50,40 @@ public class PlayerController : MonoBehaviour
         {
             myRigidBody.AddForce(Vector3.up * Mathf.Sqrt(jumpHeight * -2f * Physics.gravity.y), ForceMode.VelocityChange);
         }
-
-        //Debug.Log(myRigidBody.velocity);
-        if (Input.GetButton("Sprint") && isGrounded)
+        //added both physics based movement and non pyschics based movement to test a few things just press backspace key to switch between the 2 different kinds of movement
+        //i left all the other comments and things from the original scpit to make it easy to go back if we need to
+        if (forceMovement)
         {
-            //todo: fix the difference between using force and not using force when sprinting and walking
-            myRigidBody.AddRelativeForce(inputs * runSpeed, ForceMode.Force);//sprint using force
-            //Debug.Log(inputs * runSpeed);
-            if (GameManager.Instance.CapVelocity)
+            //Debug.Log(myRigidBody.velocity);
+            if (Input.GetButton("Sprint") && isGrounded)
             {
-                CapVelocity();
+                Debug.Log(inputs * runSpeed);
+                //todo: fix the difference between using force and not using force when sprinting and walking
+                myRigidBody.AddRelativeForce(inputs * runSpeed, ForceMode.Force);//sprint using force
+            }
+            else
+            {
+                //walk without using force
+                //myRigidBody.MovePosition(myRigidBody.position + inputs * walkSpeed * Time.fixedDeltaTime); // walking speed just moves the position of the character currently does not use velocity at all
+                //attempting to fix problem. Uncomment the above line and comment out the below line to return to previous broken
+                myRigidBody.AddRelativeForce(inputs * walkSpeed, ForceMode.Force);
+                if (GameManager.Instance.CapVelocity)
+                {
+                    CapVelocity();
+                }
             }
         }
         else
         {
-            //walk without using force
-            //myRigidBody.MovePosition(myRigidBody.position + inputs * walkSpeed * Time.fixedDeltaTime); // walking speed just moves the position of the character currently does not use velocity at all
-            //attempting to fix problem. Uncomment the above line and comment out the below line to return to previous broken
-            myRigidBody.AddRelativeForce(inputs * walkSpeed, ForceMode.Force);
+            //Debug.Log(myRigidBody.velocity);
+            if (Input.GetButton("Sprint") && isGrounded)
+            {
+                myRigidBody.MovePosition(myRigidBody.position + inputs * runSpeed * Time.fixedDeltaTime);//sprint using force
+            }
+            else
+            {
+                myRigidBody.MovePosition(myRigidBody.position + inputs * walkSpeed * Time.fixedDeltaTime); // walking speed just moves the position of the character currently does not use velocity at all
+            }
         }
     }
 
@@ -73,7 +98,12 @@ public class PlayerController : MonoBehaviour
 
     void CapVelocity()//caps the velocity of the player when just running on the ground
     {
-        myRigidBody.velocity = Vector3.ClampMagnitude(myRigidBody.velocity, maxSpeed);
+        if (Input.GetButton("Sprint"))
+        {
+            myRigidBody.velocity = Vector3.ClampMagnitude(myRigidBody.velocity, maxSpeed);
+        }
+        else
+            myRigidBody.velocity = Vector3.ClampMagnitude(myRigidBody.velocity, walkSpeed);
     }
 
     bool groundedChecker()
