@@ -34,6 +34,8 @@ public class PlayerController : MonoBehaviour
 
     void movement()
     {
+        myRigidBody.angularVelocity = Vector3.zero;
+        this.transform.rotation = Quaternion.identity;
         getUserInputs();
         isGrounded = groundedChecker();
         // adds a vertical force so the character will jump
@@ -56,9 +58,9 @@ public class PlayerController : MonoBehaviour
         else
         {
             //walk without using force
-            //myRigidBody.MovePosition(myRigidBody.position + inputs * walkSpeed * Time.fixedDeltaTime); // walking speed just moves the position of the character currently does not use velocity at all
+            myRigidBody.MovePosition(myRigidBody.position + inputs * walkSpeed * Time.fixedDeltaTime); // walking speed just moves the position of the character currently does not use velocity at all
             //attempting to fix problem. Uncomment the above line and comment out the below line to return to previous broken
-            myRigidBody.AddRelativeForce(inputs * walkSpeed, ForceMode.Force);
+            //myRigidBody.AddRelativeForce(inputs * walkSpeed, ForceMode.Force);
         }
     }
 
