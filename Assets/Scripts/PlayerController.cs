@@ -25,9 +25,6 @@ public class PlayerController : MonoBehaviour
         myRigidBody = GetComponent<Rigidbody>();
         Cam = Camera.main.transform;
     }
-    void Update()
-    {
-    }
 
     void FixedUpdate()
     {
@@ -46,23 +43,25 @@ public class PlayerController : MonoBehaviour
         {
             myRigidBody.AddForce(Vector3.up * Mathf.Sqrt(jumpHeight * -2f * Physics.gravity.y), ForceMode.VelocityChange);
         }
+
         //Debug.Log(myRigidBody.velocity);
         if (Input.GetButton("Sprint") && isGrounded)
         {
-           Debug.Log(inputs * runSpeed);
-           //todo: fix the difference between using force and not using force when sprinting and walking
-           myRigidBody.AddRelativeForce(inputs * runSpeed, ForceMode.Acceleration);//sprint using force
+            //todo: fix the difference between using force and not using force when sprinting and walking
+            myRigidBody.AddRelativeForce(inputs * runSpeed, ForceMode.Force);//sprint using force
+            //Debug.Log(inputs * runSpeed);
+            if (GameManager.Instance.CapVelocity)
+            {
+                CapVelocity();
+            }
         }
         else
         {
-           //walk without using force
-           myRigidBody.MovePosition(myRigidBody.position + inputs * walkSpeed * Time.fixedDeltaTime); // walking speed just moves the position of the character currently does not use velocity at all
-           //attempting to fix problem. Uncomment the above line and comment out the below line to return to previous broken
-           //myRigidBody.AddRelativeForce(inputs * walkSpeed, ForceMode.Acceleration);
-
+            //walk without using force
+            myRigidBody.MovePosition(myRigidBody.position + inputs * walkSpeed * Time.fixedDeltaTime); // walking speed just moves the position of the character currently does not use velocity at all
+            //attempting to fix problem. Uncomment the above line and comment out the below line to return to previous broken
+            //myRigidBody.AddRelativeForce(inputs * walkSpeed, ForceMode.Force);
         }
-        if(GameManager.Instance.CapVelocity)
-            CapVelocity();
     }
 
     void getUserInputs(){
@@ -76,7 +75,7 @@ public class PlayerController : MonoBehaviour
 
     void CapVelocity()//caps the velocity of the player when just running on the ground
     {
-            myRigidBody.velocity = Vector3.ClampMagnitude(myRigidBody.velocity, maxSpeed);
+        myRigidBody.velocity = Vector3.ClampMagnitude(myRigidBody.velocity, maxSpeed);
     }
 
     bool groundedChecker()
