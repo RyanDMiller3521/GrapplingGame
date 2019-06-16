@@ -50,10 +50,6 @@ public class PlayerController : MonoBehaviour
             //todo: fix the difference between using force and not using force when sprinting and walking
             myRigidBody.AddRelativeForce(inputs * runSpeed, ForceMode.Force);//sprint using force
             //Debug.Log(inputs * runSpeed);
-            if (GameManager.Instance.CapVelocity)
-            {
-                CapVelocity();
-            }
         }
         else
         {
@@ -61,6 +57,10 @@ public class PlayerController : MonoBehaviour
             myRigidBody.MovePosition(myRigidBody.position + inputs * walkSpeed * Time.fixedDeltaTime); // walking speed just moves the position of the character currently does not use velocity at all
             //attempting to fix problem. Uncomment the above line and comment out the below line to return to previous broken
             //myRigidBody.AddRelativeForce(inputs * walkSpeed, ForceMode.Force);
+        }
+        if (GameManager.Instance.CapVelocity)
+        {
+            CapVelocity();
         }
     }
 
