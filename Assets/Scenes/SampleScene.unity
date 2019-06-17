@@ -376,6 +376,45 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
+--- !u!1 &846732911 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5916281326257004498, guid: a9fc81fd370117a42bc9bfbc7324bdcf,
+    type: 3}
+  m_PrefabInstance: {fileID: 5916281326773032679}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &846732912
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 846732911}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4fcd683f54c6ef744b328806d4b550d6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxSpeed: 15
+  walkSpeed: 5
+  sprintSpeed: 10
+--- !u!143 &846732918
+CharacterController:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 846732911}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Height: 1
+  m_Radius: 0.5
+  m_SlopeLimit: 45
+  m_StepOffset: 0.3
+  m_SkinWidth: 0.08
+  m_MinMoveDistance: 0.001
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &963194225
 GameObject:
   m_ObjectHideFlags: 0
@@ -512,7 +551,7 @@ MonoBehaviour:
     type: 3}
   m_PrefabInstance: {fileID: 5916281326773032679}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 846732911}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d4844d874cec38243be9209453216947, type: 3}
@@ -858,6 +897,11 @@ PrefabInstance:
     - target: {fileID: 5916281326257004510, guid: a9fc81fd370117a42bc9bfbc7324bdcf,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5916281326257004509, guid: a9fc81fd370117a42bc9bfbc7324bdcf,
+        type: 3}
+      propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
