@@ -395,8 +395,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxSpeed: 15
-  walkSpeed: 5
+  walkSpeed: 7
   sprintSpeed: 10
+  jumpForce: 20
+  gravity: 96.23611
 --- !u!143 &846732918
 CharacterController:
   m_ObjectHideFlags: 0
