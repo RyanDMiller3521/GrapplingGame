@@ -9,6 +9,7 @@ public class PlayerTestController : MonoBehaviour
     private float disToGround;
     private CapsuleCollider myCollider;
     private float verticalVelocity;
+    private Vector3 currentVelocity;
 
     [SerializeField]
     private float maxSpeed;
@@ -48,6 +49,7 @@ public class PlayerTestController : MonoBehaviour
                 verticalVelocity = jumpForce;
             }
         }else{
+            //this is gravity falling. This can be disabled when we begin grappling and reapplied as needed.
             verticalVelocity -= gravity * Time.deltaTime;
         }
 
@@ -80,6 +82,15 @@ public class PlayerTestController : MonoBehaviour
 
     private void capVelocity(){
         inputs = Vector3.ClampMagnitude(inputs, maxSpeed);
+    }
+
+    private void moveTowards(Vector3 target){
+        Vector3 offset = target - this.transform.position;
+
+        if(offset.magnitude > 0.1f){
+            offset = offset.normalized * walkSpeed;//walkspeed can be replaced with a shoot speed if we want
+            characterController.Move(offset * Time.deltaTime);
+        }
     }
 }
 
