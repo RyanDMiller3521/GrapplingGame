@@ -36,8 +36,22 @@ public class PlayerTestController : MonoBehaviour
     }
 
 
+    Vector3 mainTarget = Vector3.zero;
+    RaycastHit hit;
     void Update(){
         movement();
+
+
+        //test code
+        if(Input.GetKey(KeyCode.Q)) {
+            if(Physics.Raycast(this.transform.position, Camera.main.transform.forward,  out hit, 20f)){
+                mainTarget = hit.transform.position;
+                mainTarget = hit.point;
+            }
+        }
+        if(mainTarget != Vector3.zero){
+            moveTowards(mainTarget);
+        }
     }
 
     void movement(){
@@ -90,6 +104,12 @@ public class PlayerTestController : MonoBehaviour
         if(offset.magnitude > 0.1f){
             offset = offset.normalized * walkSpeed;//walkspeed can be replaced with a shoot speed if we want
             characterController.Move(offset * Time.deltaTime);
+        }
+    }
+
+    void OnControllerColliderHit(ControllerColliderHit colliderHit){
+        if(!colliderHit.gameObject.tag.Equals("Environment") && mainTarget != Vector3.zero){
+            mainTarget = Vector3.zero;
         }
     }
 }
