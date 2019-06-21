@@ -10,6 +10,9 @@ public class PlayerTestController : MonoBehaviour
     private CapsuleCollider myCollider;
     private float verticalVelocity;
     private Vector3 currentVelocity;
+    private GameObject mainTarget = null;
+    private RaycastHit targetHit;
+    private bool gravityOn = true;//this could be put in the game manager if we want***IMPORTANT*** Anytime gravity is turned off, and back on, vertical velocity needs to be set back to zero when gravity is turned back on. Otherwise the player won't fall, but will instead be transported back to the ground.
 
     [SerializeField]
     private float maxSpeed;
@@ -21,6 +24,10 @@ public class PlayerTestController : MonoBehaviour
     private float jumpForce;
     [SerializeField]
     private float gravity = 9.81f * 9.81f;
+    [SerializeField]
+    private float straightShotSpeed;
+    [SerializeField]
+    private float shootDistance;
 
 
     void Start(){
@@ -36,26 +43,21 @@ public class PlayerTestController : MonoBehaviour
     }
 
 
-    Vector3 mainTarget = Vector3.zero;
-    RaycastHit hit;
     void Update(){
         movement();
 
 
         //test code
-        if(Input.GetKey(KeyCode.Q)) {
-            if(Physics.Raycast(this.transform.position, Camera.main.transform.forward,  out hit, 20f)){
-                mainTarget = hit.transform.position;
-                mainTarget = hit.point;
-            }
-        }
-        if(mainTarget != Vector3.zero){
-            moveTowards(mainTarget);
-        }
+
+
     }
 
     void movement(){
         getUserInputs();
+
+        if(GameManager.Instance.CapVelocity){
+            capVelocity();
+        }
 
         if(characterController.isGrounded){
             verticalVelocity = -gravity * Time.deltaTime;
@@ -67,10 +69,14 @@ public class PlayerTestController : MonoBehaviour
             verticalVelocity -= gravity * Time.deltaTime;
         }
 
-        if(GameManager.Instance.CapVelocity){
-            capVelocity();
+        if(mainTarget != null){
+            moveTowards(targetHit.point);
         }
-        inputs.y = verticalVelocity;//this is set here since we don't want to cap this velocity.
+
+
+        if(gravityOn) {
+            inputs.y = verticalVelocity;//this is set here since we don't want to cap this velocity.
+        }
         characterController.Move(inputs * Time.deltaTime);
 
     }
@@ -81,16 +87,27 @@ public class PlayerTestController : MonoBehaviour
 
     private void getUserInputs(){
         //inputs = new Vector3(Input.GetAxis("Horizontal"), 0f, Input.GetAxis("Vertical"));
-        inputs = Vector3.zero;
-        inputs.x = Input.GetAxis("Horizontal");
-        inputs.z = Input.GetAxis("Vertical");
-        Vector3 camForward = Vector3.Scale(Camera.main.transform.forward, new Vector3(1f, 0f, 1f)).normalized;
-        Vector3 baseInputs = (inputs.z * camForward + inputs.x * Camera.main.transform.right);//will be used both for sprinting and walking
+        if(GameManager.Instance.CanMove) {
+            inputs = Vector3.zero;
+            inputs.x = Input.GetAxis("Horizontal");
+            inputs.z = Input.GetAxis("Vertical");
+            Vector3 camForward = Vector3.Scale(Camera.main.transform.forward, new Vector3(1f, 0f, 1f)).normalized;
+            Vector3 baseInputs = (inputs.z * camForward + inputs.x * Camera.main.transform.right);//will be used both for sprinting and walking
 
-        if(Input.GetButton("Sprint") && characterController.isGrounded){
-            inputs = baseInputs * sprintSpeed;
-        }else{
-            inputs = baseInputs * walkSpeed;
+            if (Input.GetButton("Sprint") && characterController.isGrounded) {
+                inputs = baseInputs * sprintSpeed;
+            } else {
+                inputs = baseInputs * walkSpeed;
+            }
+        }
+
+        if(Input.GetMouseButtonDown(0)){
+            if(Physics.Raycast(this.transform.position, Camera.main.transform.forward,  out targetHit, shootDistance)){
+                mainTarget = targetHit.transform.gameObject;
+                gravityOn = false;
+                inputs = Vector3.zero;
+                GameManager.Instance.CanMove = false;
+            }
         }
     }
 
@@ -102,14 +119,22 @@ public class PlayerTestController : MonoBehaviour
         Vector3 offset = target - this.transform.position;
 
         if(offset.magnitude > 0.1f){
-            offset = offset.normalized * walkSpeed;//walkspeed can be replaced with a shoot speed if we want
+            offset = offset.normalized * straightShotSpeed;
             characterController.Move(offset * Time.deltaTime);
         }
     }
 
+    void arrivedAtTarget(){
+        //will be used when the player arrives at the target, so anything control is take from the user and gravity is turned off, all of this gets put back when it needs to be
+        mainTarget = null;
+        gravityOn = true;
+        verticalVelocity = 0f;
+        GameManager.Instance.CanMove = true;
+    }
+
     void OnControllerColliderHit(ControllerColliderHit colliderHit){
-        if(!colliderHit.gameObject.tag.Equals("Environment") && mainTarget != Vector3.zero){
-            mainTarget = Vector3.zero;
+        if(colliderHit.gameObject.Equals(mainTarget) && mainTarget != null){
+            arrivedAtTarget();
         }
     }
 }
