@@ -30,7 +30,7 @@ public class PlayerTestController : MonoBehaviour
 
         //this should not be left in the final. This is just for testing purposes. If we decide to use character controller, the rigid body should be removed and this block won't be needed
         if(characterController.enabled){
-            Destroy(rigidbody);
+            //Destroy(rigidbody);
         }
     }
 
