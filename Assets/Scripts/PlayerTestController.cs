@@ -48,7 +48,6 @@ public class PlayerTestController : MonoBehaviour
                 verticalVelocity = jumpForce;
             }
         }else{
-            Debug.Log("Else called");
             verticalVelocity -= gravity * Time.deltaTime;
         }
 
@@ -58,6 +57,10 @@ public class PlayerTestController : MonoBehaviour
         inputs.y = verticalVelocity;//this is set here since we don't want to cap this velocity.
         characterController.Move(inputs * Time.deltaTime);
 
+    }
+
+    private Vector3 getPlayerVelocity(){
+        return characterController.velocity;
     }
 
     private void getUserInputs(){
