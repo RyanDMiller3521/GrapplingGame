@@ -45,11 +45,7 @@ public class PlayerTestController : MonoBehaviour
 
     void Update(){
         movement();
-
-
         //test code
-
-
     }
 
     void movement(){
@@ -71,10 +67,15 @@ public class PlayerTestController : MonoBehaviour
 
         if(mainTarget != null){
             moveTowards(targetHit.point);
+
+        }
+        if (Input.GetButtonUp("Fire1"))//this allows you to stick to the target spot until you release the mouse button also allows the player to stop the hook at any moment
+        {
+            arrivedAtTarget();
         }
 
 
-        if(gravityOn) {
+        if (gravityOn) {
             inputs.y = verticalVelocity;//this is set here since we don't want to cap this velocity.
         }
         characterController.Move(inputs * Time.deltaTime);
@@ -100,8 +101,9 @@ public class PlayerTestController : MonoBehaviour
                 inputs = baseInputs * walkSpeed;
             }
         }
-
-        if(Input.GetMouseButtonDown(0)){
+//fires the pull shot
+        if(Input.GetButtonDown("Fire1"))
+        {
             if(Physics.Raycast(this.transform.position, Camera.main.transform.forward,  out targetHit, shootDistance)){
                 mainTarget = targetHit.transform.gameObject;
                 gravityOn = false;
@@ -127,13 +129,17 @@ public class PlayerTestController : MonoBehaviour
     void arrivedAtTarget(){
         //will be used when the player arrives at the target, so anything control is take from the user and gravity is turned off, all of this gets put back when it needs to be
         mainTarget = null;
-        gravityOn = true;
-        verticalVelocity = 0f;
-        GameManager.Instance.CanMove = true;
+        if (!Input.GetButton("Fire1"))
+        {
+            gravityOn = true;
+            verticalVelocity = 0f;
+            GameManager.Instance.CanMove = true;
+        }
     }
 
     void OnControllerColliderHit(ControllerColliderHit colliderHit){
-        if(colliderHit.gameObject.Equals(mainTarget) && mainTarget != null){
+        if(colliderHit.gameObject.Equals(mainTarget) && mainTarget != null)
+        {
             arrivedAtTarget();
         }
     }
