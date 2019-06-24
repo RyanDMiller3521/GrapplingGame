@@ -41,6 +41,7 @@ public class PlayerTestController : MonoBehaviour
     private bool pulling = false;
     private bool returnPull = false;
     private Vector3 pullPoint;
+    private Vector3 firePoint;
     private bool pullHit = false;
 
 
@@ -61,7 +62,6 @@ public class PlayerTestController : MonoBehaviour
         if(pullShot != null)//if the pull hook is in the game it will run all of the features of the hook depending on its current state
             checkPullShot();
         movement();
-        Debug.Log(pullPoint);
         //test code
     }
 
@@ -120,21 +120,24 @@ public class PlayerTestController : MonoBehaviour
 //fires the pull shot
         if(Input.GetButtonDown("Fire1") && pullShot == null)
         {
-            //pullShotOut = true;
-            /*if(Physics.Raycast(this.transform.position, Camera.main.transform.forward,  out targetHit, shootDistance)){
-                mainTarget = targetHit.transform.gameObject;
-                gravityOn = false;
-                inputs = Vector3.zero;
-                GameManager.Instance.CanMove = false;
-            }*/
+            //this feels like bad coiding but it seems to have fixed the one of the problems when sending everything out
+            firePoint = Vector3.zero;
+            pullPoint = Vector3.zero;
+            pullShot = null;
+            pulling = false;
+            returnPull = false;
+            mainTarget = null;
+            pullHit = false;
             if (Physics.Raycast(this.transform.position, Camera.main.transform.forward, out targetHit, shootDistance))
             {
                 mainTarget = targetHit.transform.gameObject;
                 pullHit = true;
                 pullPoint = targetHit.point;
             }
+            firePoint = this.transform.position;
             //creates the pull shot prefab then rotates it 90 degrees so it is sitting in the right position
             pullShot = Instantiate(pullHook, firePos.transform.position, Quaternion.identity) as GameObject;
+            Debug.Log("Cameras x rotation is " + Camera.main.transform.rotation.x * 100);
             pullShot.transform.Rotate(Camera.main.transform.rotation.x * 100, Camera.main.transform.rotation.y * 100, Camera.main.transform.rotation.z * 100);
             pullShot.transform.Rotate(90, 0, 0);
 
@@ -161,7 +164,7 @@ public class PlayerTestController : MonoBehaviour
         }
         else if(!returnPull && !pullHit)//if the raycast did not hit anything it will fire the hook out to the max distance than return back to the player
         {
-            if(shootDistance > Vector3.Distance(pullShot.transform.position, this.transform.position))
+            if(shootDistance > Vector3.Distance(pullShot.transform.position, firePoint))
             {
                 pullShot.transform.Translate(Vector3.up * shotSpeed * Time.deltaTime);//moves the hook out from the players original spot its vector.up becuase the hook if rotated 90 degrees to look right
             }
