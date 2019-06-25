@@ -544,6 +544,10 @@ PrefabInstance:
       propertyPath: shootDistance
       value: 40
       objectReference: {fileID: 0}
+    - target: {fileID: 846732912, guid: a9fc81fd370117a42bc9bfbc7324bdcf, type: 3}
+      propertyPath: firePos
+      value: 
+      objectReference: {fileID: 870109250}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a9fc81fd370117a42bc9bfbc7324bdcf, type: 3}
 --- !u!1 &648935645
@@ -688,7 +692,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &852271680
 Transform:
   m_ObjectHideFlags: 0
@@ -722,6 +726,12 @@ LightProbeGroup:
   - {x: -1, y: -1, z: 1}
   - {x: -1, y: -1, z: -1}
   m_Dering: 1
+--- !u!1 &870109250 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5341773366780031841, guid: 3cac87b8d60043f42836cff73e1de5eb,
+    type: 3}
+  m_PrefabInstance: {fileID: 342931302}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1344861437
 GameObject:
   m_ObjectHideFlags: 0

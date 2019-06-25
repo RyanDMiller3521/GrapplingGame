@@ -136,10 +136,11 @@ public class PlayerTestController : MonoBehaviour
             }
             firePoint = this.transform.position;
             //creates the pull shot prefab then rotates it 90 degrees so it is sitting in the right position
-            pullShot = Instantiate(pullHook, firePos.transform.position, Quaternion.identity) as GameObject;
+            pullShot = Instantiate(pullHook, firePos.transform.position, Quaternion.identity);
             Debug.Log("Cameras x rotation is " + Camera.main.transform.rotation.x * 100);
             pullShot.transform.Rotate(Camera.main.transform.rotation.x * 100, Camera.main.transform.rotation.y * 100, Camera.main.transform.rotation.z * 100);
             pullShot.transform.Rotate(90, 0, 0);
+            pullShot.transform.LookAt(pullPoint);
 
         }
     }
