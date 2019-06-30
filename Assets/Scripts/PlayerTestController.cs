@@ -1,4 +1,5 @@
 ﻿
+
 using UnityEditor;
 using UnityEngine;
 
@@ -14,6 +15,7 @@ public class PlayerTestController : MonoBehaviour
     private GameObject mainTarget = null;
     private RaycastHit targetHit;
     private bool gravityOn = true;//this could be put in the game manager if we want***IMPORTANT*** Anytime gravity is turned off, and back on, vertical velocity needs to be set back to zero when gravity is turned back on. Otherwise the player won't fall, but will instead be transported back to the ground.
+    private GameObject currentStraightShot;
 
     [SerializeField]
     private float maxSpeed;
@@ -25,10 +27,14 @@ public class PlayerTestController : MonoBehaviour
     private float jumpForce;
     [SerializeField]
     private float gravity = 9.81f * 9.81f;
-    [SerializeField]
-    private float straightShotSpeed;
+    [SerializeField][Tooltip("How fast the player travels with straight shot")]
+    private float straightShotSpeed;//how fast the player
+    [SerializeField][Tooltip("How fast the grappling hook travels with straight shot")]
+    private float straightGrappleSpeed;
     [SerializeField]
     private float shootDistance;
+    [SerializeField]
+    private GameObject straightShotGrapplePrefab;
 
 
     void Start(){
@@ -66,20 +72,20 @@ public class PlayerTestController : MonoBehaviour
             verticalVelocity -= gravity * Time.deltaTime;
         }
 
+        /*
         if(mainTarget != null){
             moveTowards(targetHit.point);
 
-        }
-        if (Input.GetButtonUp("Fire1"))//this allows you to stick to the target spot until you release the mouse button also allows the player to stop the hook at any moment
-        {
-            arrivedAtTarget();
-        }
-
+        }*/
 
         if (gravityOn) {
             inputs.y = verticalVelocity;//this is set here since we don't want to cap this velocity.
         }
         characterController.Move(inputs * Time.deltaTime);
+
+        if(currentStraightShot){
+           currentStraightShot.transform.position = Vector3.MoveTowards(currentStraightShot.transform.position, targetHit.point, straightGrappleSpeed * Time.deltaTime);
+        }
 
     }
 
@@ -105,12 +111,16 @@ public class PlayerTestController : MonoBehaviour
         //fires the pull shot
         if(Input.GetButtonDown("Fire1"))
         {
-            if(Physics.Raycast(this.transform.position, Camera.main.transform.forward,  out targetHit, shootDistance)){
+            if(Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward,  out targetHit, shootDistance)){//using camera position so we shoot from center of screen
                 mainTarget = targetHit.transform.gameObject;
+                currentStraightShot = Instantiate(straightShotGrapplePrefab, this.transform.position, Camera.main.transform.rotation);
                 gravityOn = false;
                 inputs = Vector3.zero;
                 GameManager.Instance.CanMove = false;
             }
+        }else if (Input.GetButtonUp("Fire1")){//this allows you to stick to the target spot until you release the mouse button also allows the player to stop the hook at any moment
+            arrivedAtTarget();
+            Destroy(currentStraightShot);
         }
     }
 

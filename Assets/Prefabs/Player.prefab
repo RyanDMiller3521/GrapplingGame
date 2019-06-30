@@ -176,10 +176,8 @@ MonoBehaviour:
   sprintSpeed: 10
   jumpForce: 20
   gravity: 75
-  straightShotSpeed: 20
-  shootDistance: 20
-  firePos: {fileID: 0}
-  shotSpeed: 10
-  pullHook: {fileID: 9001927657852863234, guid: 1d6f15c9cc4f3724b965d1d99ce70f0e,
+  straightShotSpeed: 50
+  straightGrappleSpeed: 10
+  shootDistance: 40
+  straightShotGrapplePrefab: {fileID: 628862568480742244, guid: 036792fdb64c3fc41b83a03b9d9bdf8f,
     type: 3}
-  returnDis: 0.5
