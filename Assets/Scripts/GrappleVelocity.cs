@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityStandardAssets.Characters.FirstPerson;
 
-public class GrapplingHook : MonoBehaviour
+public class GrappleVelocity : MonoBehaviour
 {
-
     public Camera cam;
     public RaycastHit hit; //want to change this to an object as an attempt
 
@@ -19,7 +18,7 @@ public class GrapplingHook : MonoBehaviour
     public Transform hand;
 
     //public FirstPersonController FPC;
-    public FirstPersonController FPC;
+    public RigidbodyFirstPersonController FPC;
     public LineRenderer LR;
 
     private Rigidbody rb;
@@ -30,12 +29,13 @@ public class GrapplingHook : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();
         Cursor.lockState = CursorLockMode.Locked;
+        
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(Input.GetKeyDown(KeyCode.Q))
+        if (Input.GetKeyDown(KeyCode.Q))
         {
             GameManager.Instance.CanMove = !GameManager.Instance.CanMove;
             Debug.Log(GameManager.Instance.CanMove);
@@ -45,7 +45,7 @@ public class GrapplingHook : MonoBehaviour
             FindSpot();
         }
 
-        if(IsPulling)
+        if (IsPulling)
         {
             Pulling();
         }
@@ -59,7 +59,7 @@ public class GrapplingHook : MonoBehaviour
 
     public void FindSpot()
     {
-        if(Physics.Raycast(cam.transform.position, cam.transform.forward, out hit, maxDistance, cullingMask))
+        if (Physics.Raycast(cam.transform.position, cam.transform.forward, out hit, maxDistance, cullingMask))
         {
             IsPulling = true;
             loc = hit.point;
@@ -71,9 +71,14 @@ public class GrapplingHook : MonoBehaviour
 
     public void Pulling()
     {
-        if (Vector3.Distance(transform.position, loc) > 0.5f)
+        /*if (Vector3.Distance(transform.position, loc) > 0.5f)
         {
             transform.position = Vector3.Lerp(transform.position, loc, speed * Time.deltaTime / Vector3.Distance(transform.position, loc)); // helps with the look depend on distance to the object
+            LR.SetPosition(0, hand.position);
+        }*/
+        if (Vector3.Distance(transform.position, loc) > 0.5f)
+        {
+            
             LR.SetPosition(0, hand.position);
         }
 
@@ -92,3 +97,4 @@ public class GrapplingHook : MonoBehaviour
         LR.enabled = false;
     }
 }
+
