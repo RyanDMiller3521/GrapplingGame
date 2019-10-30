@@ -414,10 +414,10 @@ MonoBehaviour:
   cullingMask:
     serializedVersion: 2
     m_Bits: 55
-  maxDistance: 20
+  maxDistance: 50
   IsPulling: 0
   loc: {x: 0, y: 0, z: 0}
-  speed: 10
+  speed: 20
   hand: {fileID: 1063914809002559012}
   FPC: {fileID: 11400004}
   LR: {fileID: 2632696691090859300}

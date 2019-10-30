@@ -60,6 +60,7 @@ public class GrapplingVelocity : MonoBehaviour
     {
         if (Physics.Raycast(cam.transform.position, cam.transform.forward, out hit, maxDistance, cullingMask))
         {
+            rb.useGravity = false;
             IsPulling = true;
             loc = hit.point;
             GameManager.Instance.CanMove = false;
@@ -70,6 +71,7 @@ public class GrapplingVelocity : MonoBehaviour
 
     public void Pulling()
     {
+
         /*if (Vector3.Distance(transform.position, loc) > 0.5f)
         {
             transform.position = Vector3.Lerp(transform.position, loc, speed * Time.deltaTime / Vector3.Distance(transform.position, loc)); // helps with the look depend on distance to the object
@@ -77,7 +79,8 @@ public class GrapplingVelocity : MonoBehaviour
         }*/
         if (Vector3.Distance(transform.position, loc) > 0.5f)
         {
-
+            Vector3 moveDir = transform.position - loc;
+            rb.AddForce(-moveDir * speed, ForceMode.Acceleration);
             LR.SetPosition(0, hand.position);
         }
 
@@ -91,6 +94,7 @@ public class GrapplingVelocity : MonoBehaviour
 
     public void HookReturn()
     {
+        rb.useGravity = true;
         IsPulling = false;
         GameManager.Instance.CanMove = true;
         LR.enabled = false;
