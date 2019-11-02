@@ -16,6 +16,7 @@ public class PlayerTestController : MonoBehaviour
     private RaycastHit targetHit;
     private bool gravityOn = true;//this could be put in the game manager if we want***IMPORTANT*** Anytime gravity is turned off, and back on, vertical velocity needs to be set back to zero when gravity is turned back on. Otherwise the player won't fall, but will instead be transported back to the ground.
     private GameObject currentStraightShot;
+    private bool hookArrivedAtTarget = false;//will be set to true when the grappling hook physically hits the target shot point
 
     [SerializeField]
     private float maxSpeed;
@@ -55,6 +56,10 @@ public class PlayerTestController : MonoBehaviour
         //test code
     }
 
+    public void setHookArrived(bool value){
+        hookArrivedAtTarget = value;
+    }
+
     void movement(){
         getUserInputs();
 
@@ -72,11 +77,12 @@ public class PlayerTestController : MonoBehaviour
             verticalVelocity -= gravity * Time.deltaTime;
         }
 
-        /*
-        if(mainTarget != null){
+        //this code lets us move to our hit target
+        
+        if(mainTarget != null && hookArrivedAtTarget){
             moveTowards(targetHit.point);
 
-        }*/
+        }
 
         if (gravityOn) {
             inputs.y = verticalVelocity;//this is set here since we don't want to cap this velocity.
@@ -140,8 +146,13 @@ public class PlayerTestController : MonoBehaviour
     void arrivedAtTarget(){
         //will be used when the player arrives at the target, so anything control is take from the user and gravity is turned off, all of this gets put back when it needs to be
         mainTarget = null;
-        if (!Input.GetButton("Fire1"))
-        {
+        Debug.Log("arrived at target");
+        setHookArrived(false);
+        if (currentStraightShot) {
+            Debug.Log("Deleting rigid body");
+            Destroy(currentStraightShot.transform.GetChild(0).GetComponent<Rigidbody>());
+        }
+        if (!Input.GetButton("Fire1")){
             gravityOn = true;
             verticalVelocity = 0f;
             GameManager.Instance.CanMove = true;
