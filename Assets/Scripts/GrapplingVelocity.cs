@@ -36,8 +36,7 @@ public class GrapplingVelocity : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Q))
         {
-            GameManager.Instance.CanMove = !GameManager.Instance.CanMove;
-            Debug.Log(GameManager.Instance.CanMove);
+            
         }
         if (Input.GetButtonDown("Fire1"))
         {
